@@ -30,3 +30,17 @@ class Item(db.Model):
 
     def __repr__(self):
         return f'<Item {self.id}, {self.name}, {self.price}>'
+    
+class Review(db.Model, SerializerMixin):
+    __tablename__ = "reviews"
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.String)
+    customer_id = db.Column(db.Integer, db.ForeignKey("customers.id"))
+    item_id = db.Column(db.Integer, db.ForeignKey("items.id"))
+    customer = db.relationship("Customer", back_populates="reviews")
+    item = db.relationship("Item", back_populates="reviews")
+
+    serialize_rules = (
+        "-customer.reviews",
+        "-item.reviews",
+    )
